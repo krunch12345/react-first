@@ -1,10 +1,18 @@
 import React from 'react'
 import './utils/reset.sass'
 import './utils/common.sass'
-import { Chat } from './components'
+import { CssBaseline } from '@mui/material'
+
+import { MainLayout } from './layout'
+import { Messenger } from './pages'
 
 export const App = () => {
     return (
-        <Chat />
+        <>
+            <CssBaseline />
+            <MainLayout>
+                <Messenger />
+            </MainLayout>
+        </>
     )
 }
