@@ -1,14 +1,22 @@
 import React from 'react'
-import { Box, Paper } from '@mui/material'
+import { Paper, Stack } from '@mui/material'
 import PropTypes from 'prop-types'
+import { Header } from '../../../components'
 
 export const MainLayout = ({ children }) => {
     return (
-        <Box sx={{ height: '100vh' }} p={2}>
-            <Paper elevation={3} sx={{ height: '100%', display: 'flex' }}>
+        <Stack
+            sx={{ height: '100vh', display: 'flex', flex: 1 }}
+        >
+            <Header />
+
+            <Paper
+                elevation={3}
+                sx={{ height: '100%', alignContent: 'stretch', alignItems: 'stretch', margin: 2 }}
+            >
                 {children}
             </Paper>
-        </Box>
+        </Stack>
     )
 }
 

@@ -1,9 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { List, ListItem, ListItemButton, ListItemText, ListSubheader } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-export const ChatList = ({ chats = [] }) => {
+export const ChatList = ({ chats = [], selectedChat }) => {
     const [selectedChatId, setSelectedChatId] = React.useState()
+
+    React.useEffect(
+        () => setSelectedChatId(selectedChat),
+        [selectedChat],
+    )
+
+    const navigate = useNavigate()
 
     const chatsItems = React.useMemo(
         () => {
@@ -16,7 +24,10 @@ export const ChatList = ({ chats = [] }) => {
                         sx={{ display: 'flex', alignContent: 'stretch', alignItems: 'stretch' }}
                     >
                         <ListItemButton
-                            onClick={() => setSelectedChatId(id)}
+                            onClick={() => {
+                                setSelectedChatId(id)
+                                navigate(`/chats/${id}`)
+                            }}
                             dense
                             selected={id === selectedChatId}
                             sx={{ flexDirection: 'column', alignItems: 'flex-start' }}
@@ -29,7 +40,7 @@ export const ChatList = ({ chats = [] }) => {
                 )
             )
         },
-        [chats, selectedChatId],
+        [chats, navigate, selectedChatId],
     )
 
     return (
@@ -54,5 +65,6 @@ ChatList.propTypes = {
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired
         })
-    )
+    ),
+    selectedChat: PropTypes.string
 }
