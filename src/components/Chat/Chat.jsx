@@ -1,34 +1,26 @@
 import React from 'react'
 import { Button, List, ListItem, ListItemText, ListSubheader, Stack, TextField } from '@mui/material'
 import { nanoid } from 'nanoid'
+import { useParams } from 'react-router'
+import { getMessageListByChat } from '../../store/messages/selectors'
+import { useDispatch, useSelector } from 'react-redux'
+import { createMessage } from '../../store/messages/actions'
 
 export const Chat = () => {
-    const [messageList, setMessageList] = React.useState([])
     const [textMessage, setTextMessage] = React.useState('')
 
-    const sendMessage = React.useCallback(
-        (author, message) => {
-            const newMessage = {
-                id: nanoid(),
-                author,
-                message,
-            }
+    const { chatId } = useParams()
+    const messages = useSelector(getMessageListByChat(chatId))
+    const dispatch = useDispatch()
 
-            setMessageList(
-                (messageList) => (
-                    [
-                        ...messageList,
-                        newMessage,
-                    ]
-                )
-            )
-        },
-        [],
+    const chatMessages = React.useMemo(
+        () => messages || [],
+        [messages],
     )
 
     const messagesItems = React.useMemo(
         () => {
-            return messageList.map(
+            return chatMessages.map(
                 ({ id, author, message }) => (
                     <ListItem
                         key={id}
@@ -46,30 +38,41 @@ export const Chat = () => {
                 )
             )
         },
-        [messageList],
+        [chatMessages],
     )
 
     React.useEffect(
         () => {
-            const lastMessage = messageList[messageList.length - 1]
+            const lastMessage = chatMessages[chatMessages.length - 1]
 
-            if (messageList.length !== 0 && lastMessage?.author !== 'bot') {
+            if (chatMessages.length !== 0 && lastMessage?.author !== 'bot') {
                 const send = setTimeout(
-                    () => sendMessage('bot', 'Я есть Грут!'),
+                    () => {
+                        dispatch(createMessage(chatId, {
+                            id: nanoid(),
+                            author: 'bot',
+                            message: 'Я есть Грут!',
+                        }))
+                    },
                     1000,
                 )
                 return () => clearTimeout(send)
             }
         },
-        [messageList, sendMessage],
+        [chatId, chatMessages, dispatch],
     )
 
     const resetMessage = () => setTextMessage('')
 
-    const onSubmitMessage = (e) => {
+    const handleCreateMessage = (e) => {
         e.preventDefault()
 
-        sendMessage('user', textMessage)
+        dispatch(createMessage(chatId, {
+            id: nanoid(),
+            author: 'user',
+            message: textMessage,
+        }))
+
         resetMessage()
     }
 
@@ -90,12 +93,12 @@ export const Chat = () => {
                 }
                 dense
             >
-                {messageList.length ? messagesItems : <ListItem>Send your first message</ListItem>}
+                {chatMessages.length ? messagesItems : <ListItem>Send your first message</ListItem>}
             </List>
 
             <Stack
                 component={'form'}
-                onSubmit={onSubmitMessage}
+                onSubmit={handleCreateMessage}
                 flexDirection='row'
             >
                 <TextField

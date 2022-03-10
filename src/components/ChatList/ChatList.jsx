@@ -1,10 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { List, ListItem, ListItemButton, ListItemText, ListSubheader } from '@mui/material'
+import { Button, List, ListItem, ListItemButton, ListItemText, ListSubheader, Stack } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getChatList } from '../../store/chats/selectors'
+import { createChat } from '../../store/chats/actions'
+import { nanoid } from 'nanoid'
 
-export const ChatList = ({ chats = [], selectedChat }) => {
+export const ChatList = ({ selectedChat }) => {
     const [selectedChatId, setSelectedChatId] = React.useState()
+
+    const chats = useSelector(getChatList)
+    const dispatch = useDispatch()
 
     React.useEffect(
         () => setSelectedChatId(selectedChat),
@@ -43,28 +50,36 @@ export const ChatList = ({ chats = [], selectedChat }) => {
         [chats, navigate, selectedChatId],
     )
 
+    const handleCreateChat = () => {
+        const name = Date.now()
+        dispatch(createChat({
+            id: nanoid(),
+            name: `Chat_${name}`,
+        }))
+    }
+
     return (
-        <List
-            sx={{ width: '100%', overflowY: 'auto', overflowX: 'hidden' }}
-            component='nav'
-            subheader={
-                <ListSubheader component='div'>
-                    Chats
-                </ListSubheader>
-            }
-            dense
-        >
-            {chats.length ? chatsItems : <ListItem>No chats</ListItem>}
-        </List>
+        <Stack direction='column' flex={1} justifyContent='space-between' alignItems='center' spacing={1} pb={2}>
+            <List
+                sx={{ width: '100%', overflowY: 'auto', overflowX: 'hidden' }}
+                component='nav'
+                subheader={
+                    <ListSubheader component='div'>
+                        Chats
+                    </ListSubheader>
+                }
+                dense
+            >
+                {chats.length ? chatsItems : <ListItem>No chats</ListItem>}
+            </List>
+
+            <Button onClick={handleCreateChat}>
+                Добавить чат
+            </Button>
+        </Stack>
     )
 }
 
 ChatList.propTypes = {
-    chats: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired
-        })
-    ),
     selectedChat: PropTypes.string
 }

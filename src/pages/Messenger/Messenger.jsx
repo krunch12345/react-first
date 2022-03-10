@@ -1,14 +1,17 @@
 import React from 'react'
 import { Divider, Grid, Stack } from '@mui/material'
 import { Chat, ChatList } from '../../components'
-import { chatsAll } from '../../constants/chatsAll'
 import { useParams } from 'react-router'
 import { Navigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { getChatList } from '../../store/chats/selectors'
 
 export const Messenger = () => {
     const { chatId } = useParams()
 
-    if (chatId && !chatsAll.find((chat) => chat.id === chatId)) {
+    const chats = useSelector(getChatList)
+
+    if (chatId && !chats.find((chat) => chat.id === chatId)) {
         return <Navigate replace to='/chats' />
     }
 
@@ -21,7 +24,6 @@ export const Messenger = () => {
         >
             <Grid item xs={3} display='flex' flex={1}>
                 <ChatList
-                    chats={chatsAll}
                     selectedChat={chatId}
                 />
             </Grid>
