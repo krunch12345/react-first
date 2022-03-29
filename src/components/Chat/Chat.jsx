@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 import { useParams } from 'react-router'
 import { getMessageListByChat } from '../../store/messages/selectors'
 import { useDispatch, useSelector } from 'react-redux'
-import { createMessage } from '../../store/messages/actions'
+import { createMessageWithThunk } from '../../store/messages/actions'
 
 export const Chat = () => {
     const [textMessage, setTextMessage] = React.useState('')
@@ -41,33 +41,33 @@ export const Chat = () => {
         [chatMessages],
     )
 
-    React.useEffect(
-        () => {
-            const lastMessage = chatMessages[chatMessages.length - 1]
-
-            if (chatMessages.length !== 0 && lastMessage?.author !== 'bot') {
-                const send = setTimeout(
-                    () => {
-                        dispatch(createMessage(chatId, {
-                            id: nanoid(),
-                            author: 'bot',
-                            message: 'Я есть Грут!',
-                        }))
-                    },
-                    1000,
-                )
-                return () => clearTimeout(send)
-            }
-        },
-        [chatId, chatMessages, dispatch],
-    )
+    // React.useEffect(
+    //     () => {
+    //         const lastMessage = chatMessages[chatMessages.length - 1]
+    //
+    //         if (chatMessages.length !== 0 && lastMessage?.author !== 'bot') {
+    //             const send = setTimeout(
+    //                 () => {
+    //                     dispatch(createMessage(chatId, {
+    //                         id: nanoid(),
+    //                         author: 'bot',
+    //                         message: 'Я есть Грут!',
+    //                     }))
+    //                 },
+    //                 1000,
+    //             )
+    //             return () => clearTimeout(send)
+    //         }
+    //     },
+    //     [chatId, chatMessages, dispatch],
+    // )
 
     const resetMessage = () => setTextMessage('')
 
     const handleCreateMessage = (e) => {
         e.preventDefault()
 
-        dispatch(createMessage(chatId, {
+        dispatch(createMessageWithThunk(chatId, {
             id: nanoid(),
             author: 'user',
             message: textMessage,
