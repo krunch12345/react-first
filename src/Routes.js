@@ -7,7 +7,8 @@ import {
 import {
     Home,
     Profile,
-    Messenger
+    Messenger,
+    GistsList,
 } from './pages'
 
 export const Routes = () => {
@@ -31,6 +32,11 @@ export const Routes = () => {
             <Route
                 path='/chats/:chatId'
                 element={ <Messenger /> }
+            />
+
+            <Route
+                path='/gists'
+                element={<GistsList />}
             />
         </Switch>
     )

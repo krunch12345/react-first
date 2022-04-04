@@ -17,6 +17,10 @@ export const Header = () => {
                 <Button to='/chats' component={Link} color='inherit'>
                     Chats
                 </Button>
+
+                <Button to='/gists' component={Link} color='inherit'>
+                    Gists
+                </Button>
             </Toolbar>
         </AppBar>
     )
