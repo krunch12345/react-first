@@ -1,4 +1,6 @@
 import React from 'react'
+import { firebaseApp } from './services/firebase'
+
 import {
     Routes as Switch,
     Route,
@@ -7,10 +9,30 @@ import {
 import {
     Home,
     Profile,
-    Messenger
+    Messenger,
+    GistsList,
+    Login,
+    SignUp
 } from './pages'
+import { PrivateRoute } from './hocs/PrivateRoute'
 
 export const Routes = () => {
+    const [authed, setAuthed] = React.useState(false)
+
+    React.useEffect(
+        () => {
+            firebaseApp.auth().onAuthStateChanged(
+                (user) => {
+                    if (user) {
+                        setAuthed(true)
+                    } else {
+                        setAuthed(false)
+                    }
+                })
+        },
+        []
+    )
+
     return (
         <Switch>
             <Route
@@ -20,17 +42,44 @@ export const Routes = () => {
 
             <Route
                 path='/profile'
-                element={ <Profile /> }
+                element={
+                    <PrivateRoute authenticated={authed}>
+                        <Profile />
+                    </PrivateRoute>
+                }
             />
 
             <Route
                 path='/chats'
-                element={ <Messenger /> }
+                element={
+                    <PrivateRoute authenticated={authed}>
+                        <Messenger />
+                    </PrivateRoute>
+                }
             />
 
             <Route
                 path='/chats/:chatId'
-                element={ <Messenger /> }
+                element={
+                    <PrivateRoute authenticated={authed}>
+                        <Messenger />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path='/gists'
+                element={<GistsList />}
+            />
+
+            <Route
+                path='/login'
+                element={<Login />}
+            />
+
+            <Route
+                path='/signup'
+                element={<SignUp />}
             />
         </Switch>
     )
