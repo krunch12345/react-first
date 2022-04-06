@@ -3,6 +3,12 @@ import { firebaseApp } from '../../services/firebase'
 import { Stack, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 
+export const LoginFormTestIds = {
+    submit: 'LoginForm-submit',
+    loginField: 'LoginForm-loginField',
+    passwordField: 'LoginForm-passwordField',
+}
+
 export const Login = () => {
     const [email, setEmail] = React.useState('')
 
@@ -40,6 +46,7 @@ export const Login = () => {
                 <div>
                     <input
                         placeholder='Email'
+                        data-testid={LoginFormTestIds.loginField}
                         name='email'
                         type='email'
                         onChange={handleEmailChange}
@@ -49,6 +56,7 @@ export const Login = () => {
                 <div>
                     <input
                         placeholder='Password'
+                        data-testid={LoginFormTestIds.passwordField}
                         name='password'
                         onChange={handlePassChange}
                         value={password}
@@ -57,7 +65,12 @@ export const Login = () => {
                 </div>
                 <div>
                     {error && <p>{error}</p>}
-                    <button type='submit'>Login</button>
+                    <button
+                        type='submit'
+                        data-testid={LoginFormTestIds.submit}
+                    >
+                        Login
+                    </button>
                 </div>
                 <hr />
                 <p>
